@@ -4,6 +4,7 @@ import cors from "cors";
 import AuthRoutes from "./routes/AuthRoutes.js"; 
 import MessageRoutes from "./routes/MessageRoutes.js";
 
+ 
 dotenv.config();
 const app = express();
 
@@ -16,5 +17,6 @@ app.use("/api/message", MessageRoutes);
 const server = app.listen(process.env.PORT, () => {
     console.log(`Server started on port ${process.env.PORT}`);
 });
+
 
 global.onlineUsers = new Map();

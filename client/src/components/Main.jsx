@@ -21,33 +21,37 @@ function Main() {
     if (redirectLogin) router.push("/login");
   }, [redirectLogin]);
 
-  onAuthStateChanged(firebaseAuth, async (currentUser) => {
+  useEffect(() => {
+    onAuthStateChanged(firebaseAuth, async (currentUser) => {
+      if (!currentUser) {
+        setRedirectLogin(true);
+        return;
+      }
 
-    if (!currentUser) setRedirectLogin(true);
-      
-    if (!userInfo && currentUser?.email) {
-      const { data } = await axios.post(CHECK_USER_ROUTE, {
-        email: currentUser.email,
-      });
-    
-    if (!data.status) {
-      router.push("/login");
-    }
-    if(data?.data) {
-      const { id, name, email, profilePicture: profileImage } = data.data;
-    dispatch({
-      type: reducerCases.SET_USER_INFO,
-      userInfo: {
-        id: data.id,
-        name,
-        email,
-        profileImage,
-        status: "",
-      },
-    });}
-    
-  }
-  });
+      if (!userInfo && currentUser?.email) {
+        const { data } = await axios.post(CHECK_USER_ROUTE, { email: currentUser.email });
+        if (!data.status) {
+          router.push("/login");
+        }
+        console.log({ data });
+
+        if (data?.data) {
+          const { id, name, email, profilePicture: profileImage } = data.data;
+          dispatch({
+            type: reducerCases.SET_USER_INFO,
+            userInfo: {
+              id,
+              name,
+              email,
+              profileImage,
+              status: "",
+            },
+          });
+          console.log("User ID from userInfo:", id); // Log để kiểm tra id
+        }
+      }
+    });
+  }, [userInfo]);
   return (
     <>
       <div className="grid grid-cols-main h-screen max-h-screen max-w-full over">

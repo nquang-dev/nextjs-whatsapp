@@ -1,53 +1,29 @@
 import { useStateProvider } from "@/context/StateContext";
 import { ADD_MESSAGE_ROUTE } from "@/utils/ApiRoutes";
-import React, { useState } from "react";
-import axios from "axios"; 
+import React, { useState } from "react"; 
 import { BsEmojiSmile } from "react-icons/bs";
 import { FaMicrophone } from "react-icons/fa";
 import { ImAttachment } from "react-icons/im";
 import { MdSend } from "react-icons/md";
+import axios from "axios";
 
 function MessageBar() {
   const [{ userInfo, currentChatUser }, dispatch] = useStateProvider();
   const [message, setMessage] = useState("");
 
   const sendMessage = async () => {
-    try {
-      // Kiểm tra dữ liệu trước khi gửi
-      if (!message.trim()) {
-        console.log("Tin nhắn không được để trống");
-        return;
-      }
-
-      if (!userInfo?.id || !currentChatUser?.id) {
-        console.log("Thông tin người dùng không đầy đủ");
-        console.log("userInfo:", userInfo);
-        console.log("currentChatUser:", currentChatUser);
-        return;
-      }
-
-      const messageData = {
-        receiver: currentChatUser?.id, // Thay 'to' bằng 'receiver' nếu backend yêu cầu
-        sender: userInfo?.id,          // Sử dụng 'sender' thay vì 'from' để khớp với backend
-        message: message.trim(),
-      };
-
-      console.log("Đang gửi dữ liệu:", messageData);
-
-      const { data, status } = await axios.post(ADD_MESSAGE_ROUTE, messageData);
-
-      if (status === 201) {
-        setMessage("");
-        console.log("Tin nhắn đã được gửi thành công:", data);
-        // Cập nhật trạng thái nếu cần thiết
-        dispatch({ 
-          type: "ADD_MESSAGE", 
-          payload: data 
-        });
-      }
-    } catch (err) {
-      console.log("Lỗi khi gửi tin nhắn:", err);
-    }
+     try {
+      const { data } = await axios.post(ADD_MESSAGE_ROUTE, {
+        to: currentChatUser?.id,
+        from: userInfo?.id,
+        message,
+      });
+       setMessage("");
+     } catch (error) {
+      console.log(error);
+      
+      
+     }
   };
 
   return (
