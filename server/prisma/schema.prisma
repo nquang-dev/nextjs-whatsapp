@@ -13,11 +13,11 @@ model User {
   name             String
   profilePicture   String    @default("")
   about            String    @default("")
-  sentMessages     Message[] @relation("sentMessages")
-  receivedMessages Message[] @relation("receivedMessages")
+  sentMessages     Messages[] @relation("sentMessages")
+  receivedMessages Messages[] @relation("receivedMessages")
 }
 
-model Message {
+model Messages {
   id            Int      @id @default(autoincrement())
   sender        User     @relation("sentMessages", fields:[senderId], references: [id])
   senderId      Int
