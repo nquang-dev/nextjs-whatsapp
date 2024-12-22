@@ -14,7 +14,11 @@ function login() {
 
   const [{ userInfo, newUser }, dispatch] = useStateProvider();
   useEffect(() => {
-    if (!newUser && userInfo?.id) router.push("/");
+    if (!newUser && userInfo?.id){
+      console.log("User ID from userInfo:", userInfo.id);
+      router.push("/");
+    }
+      
   }, [newUser, userInfo]);
 
   const handleLogin = async () => {
@@ -42,11 +46,12 @@ function login() {
           });
           router.push("/onboarding");
         } else {
-          const { id, name, email, profilePicture: profileImage } = data;
+          const { id, name, email, profilePicture: profileImage } = data.data;
+          console.log("User ID:", id);
           dispatch({
             type: reducerCases.SET_USER_INFO,
             userInfo: {
-              id: data.id,
+              id: id,
               name,
               email,
               profileImage,
