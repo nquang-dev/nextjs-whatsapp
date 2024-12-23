@@ -10,6 +10,7 @@ import { reducerCases } from "@/context/constants";
 import EmojiPicker from "emoji-picker-react";
 import PhotoPicker from "@/components/common/PhotoPicker";
 import { ADD_IMAGE_MESSAGE_ROUTE } from "@/utils/ApiRoutes";
+import CaptureAudio from "../common/CaptureAudio";
 
 function MessageBar() {
   const [{ userInfo, currentChatUser, socket }, dispatch] = useStateProvider();
@@ -17,6 +18,7 @@ function MessageBar() {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const emojiPickerRef = useRef(null);
   const [grabPhoto, setGrabPhoto] = useState(false);
+  const [showAudioRecorder, setShowAudioRecorder] = useState(false);
 
   const PhotoPickerChange = async (e) => {
     
@@ -121,6 +123,8 @@ function MessageBar() {
 
   return (
     <div className="bg-panel-header-background h-20 px-4 flex items-center gap-6 relative">
+      {
+        !showAudioRecorder && (
       <>
         <div className="flex gap-6">
           <BsEmojiSmile
@@ -153,20 +157,28 @@ function MessageBar() {
             onChange={(e) => setMessage(e.target.value)}
           />
         </div>
-        <div className="flex gap-6">
-          <FaMicrophone
+        <div className="flex w-10 items-center justify-center">
+          <button>
+            {message.length ? (
+            <MdSend
             className="text-panel-header-icon cursor-pointer text-xl"
-            title="Microphone"
-          />
-          <MdSend
-            className="text-panel-header-icon cursor-pointer text-xl"
-            title="Send"
+            title="Send message"
             onClick={sendMessage}
           />
+        ) : (
+        <FaMicrophone
+          className="text-panel-header-icon cursor-pointer text-xl"
+          title="Record"
+          onClick={() => setShowAudioRecorder(true)}
+        />
+        )}        
+          </button>
         </div>
       </>
+      )}
       {grabPhoto &&
        <PhotoPicker onChange={PhotoPickerChange} />}
+       {showAudioRecorder && <CaptureAudio hide={setShowAudioRecorder}/>}
     </div>
   );
 }
