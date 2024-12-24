@@ -173,8 +173,14 @@ function CaptureAudio({hide}) {
 
   const sendRecording = async () => {
     alert("Sending audio message");
+    // Thêm log để kiểm tra
+    console.log("Sending recording:", renderedAudio);
     try {
-     
+     // Add validation to ensure audio exists before sending
+    if (!renderedAudio) {
+      console.warn("No audio recorded");
+      return;
+    }
       const formData = new FormData();
       formData.append("audio", renderedAudio);
       const response = await axios.post(ADD_AUDIO_MESSAGE_ROUTE, formData, {
@@ -195,7 +201,7 @@ function CaptureAudio({hide}) {
           message: response.data.message,
         });
         dispatch({
-          type: reducerCasess.ADD_MESSAGE,
+          type: reducerCases.ADD_MESSAGE,
           newMessage: {
             ...response.data.message,
           },
@@ -214,7 +220,7 @@ function CaptureAudio({hide}) {
     const minutes = Math.floor(time / 60);
     const seconds = Math.floor(time % 60);
     return `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
-  }
+  };
 
   // Nếu chưa phải client, return null
   if (!isClient) {

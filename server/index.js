@@ -12,6 +12,7 @@ import pkg from "nodemon";
 dotenv.config();
 const app = express();
 
+app.use("/uploads/recordings", express.static("uploads/recordings"));
 app.use("/uploads/images", express.static("uploads/images"));
 
 app.use(cors());
